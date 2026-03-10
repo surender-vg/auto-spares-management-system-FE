@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Row, Col, Card, Form, Button, ListGroup, Image } from 'react-bootstrap';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import API_URL from '../constants/api';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { FaTruck, FaCreditCard, FaMoneyBillWave, FaLock, FaArrowLeft } from 'react-icons/fa';
@@ -357,7 +358,7 @@ const CheckoutPage = () => {
                                     {cartItems.map((item) => (
                                         <div key={item.product} className="checkout-item">
                                             <Image
-                                                src={item.image}
+                                                src={`${API_URL}${item.image}`}
                                                 alt={item.name}
                                                 fluid
                                                 rounded
