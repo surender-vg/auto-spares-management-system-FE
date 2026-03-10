@@ -1,0 +1,17 @@
+export const PRODUCT_CATEGORIES = [
+  'Engine Parts',
+  'Brake System Parts',
+  'Electrical & Electronics',
+  'Transmission & Clutch',
+  'Suspension & Steering',
+  'Filters (Oil, Air, Fuel)',
+  'Lubricants & Oils',
+  'Battery & Charging System',
+  'Exhaust System',
+  'Cooling System Parts',
+  'Body & Exterior Parts',
+  'Lights & Indicators',
+  'Tyres & Wheels',
+  'Cables & Controls',
+  'Accessories & Safety Items',
+];
