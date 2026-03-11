@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, Row, Col, Card, Badge } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext';
-import API_URL from '../constants/api';
+import { getImageUrl } from '../constants/api';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { FaCheck, FaTimes, FaEye, FaBoxOpen, FaShoppingBag, FaClock, FaTruck, FaCreditCard } from 'react-icons/fa';
@@ -127,7 +127,7 @@ const MyOrdersPage = () => {
                                                 <div className="order-card-items">
                                                     {order.orderItems?.slice(0, 3).map((item, i) => (
                                                         <div key={i} className="order-card-item">
-                                                            <img src={`${API_URL}${item.image}`} alt={item.name} className="order-card-item-img" />
+                                                            <img src={getImageUrl(item.image)} alt={item.name} className="order-card-item-img" />
                                                             <div className="order-card-item-info">
                                                                 <span className="order-card-item-name">{item.name}</span>
                                                                 <small className="text-muted">Qty: {item.qty} × ₹{item.price}</small>

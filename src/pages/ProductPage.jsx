@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Row, Col, Image, ListGroup, Card, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
-import API_URL from '../constants/api';
+import { getImageUrl } from '../constants/api';
 import { useNavigate } from 'react-router-dom';
 
 const ProductPage = () => {
@@ -33,7 +33,7 @@ const ProductPage = () => {
             </Link>
             <Row>
                 <Col md={6}>
-                    <Image src={`${API_URL}${product.image}`} alt={product.name} fluid />
+                    <Image src={getImageUrl(product.image)} alt={product.name} fluid />
                 </Col>
                 <Col md={3}>
                     <ListGroup variant='flush'>

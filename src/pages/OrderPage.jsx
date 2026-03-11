@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Row, Col, Image, Card, Button, Badge } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext';
-import API_URL from '../constants/api';
+import { getImageUrl } from '../constants/api';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import {
@@ -223,7 +223,7 @@ const OrderPage = () => {
                         <Card.Body className="p-0">
                             {order.orderItems.map((item, index) => (
                                 <div key={index} className="order-item-row">
-                                    <Image src={`${API_URL}${item.image}`} alt={item.name} className="order-item-img" />
+                                    <Image src={getImageUrl(item.image)} alt={item.name} className="order-item-img" />
                                     <div className="order-item-details">
                                         <Link to={`/product/${item.product}`} className="order-item-name">
                                             {item.name}

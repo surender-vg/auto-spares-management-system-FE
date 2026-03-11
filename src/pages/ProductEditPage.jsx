@@ -77,7 +77,10 @@ const ProductEditPage = () => {
     const submitHandler = async (e) => {
         e.preventDefault();
         try {
-            if (!name || !price || !image || !brand || !category || !description || !countInStock || !bikeModel) {
+            if (!name || price === '' || price === undefined || price === null
+                || !image || !brand || !category || !description
+                || countInStock === '' || countInStock === undefined || countInStock === null
+                || !bikeModel) {
                 toast.error('Please fill in all fields');
                 return;
             }

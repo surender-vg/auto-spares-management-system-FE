@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
 import { FaPlus, FaEdit, FaTrash, FaBox } from 'react-icons/fa';
 import DashboardSidebar from '../components/DashboardSidebar';
-import API_URL from '../constants/api';
+import { getImageUrl } from '../constants/api';
 
 const ProductListPage = () => {
     const [products, setProducts] = useState([]);
@@ -83,7 +83,7 @@ const ProductListPage = () => {
                                             <td>
                                                 <div className="adm-product-cell">
                                                     <img
-                                                        src={`${API_URL}${product.image?.startsWith('/uploads') ? product.image : `/uploads/${product.image}`}`}
+                                                        src={getImageUrl(product.image)}
                                                         alt={product.name}
                                                         className="adm-product-thumb"
                                                         onError={(e) => { e.target.src = '/placeholder.png'; }}

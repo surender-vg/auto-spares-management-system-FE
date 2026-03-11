@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Link, useNavigate, useParams, useLocation } from 'react-router-dom';
 import { Row, Col, ListGroup, Image, Form, Button, Card } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext';
-import API_URL from '../constants/api';
+import { getImageUrl } from '../constants/api';
 import { useCart } from '../context/CartContext';
 
 const CartPage = () => {
@@ -42,7 +42,7 @@ const CartPage = () => {
                             <ListGroup.Item key={item.product}>
                                 <Row>
                                     <Col md={2}>
-                                        <Image src={`${API_URL}${item.image}`} alt={item.name} fluid rounded />
+                                        <Image src={getImageUrl(item.image)} alt={item.name} fluid rounded />
                                     </Col>
                                     <Col md={3}>
                                         <Link to={`/product/${item.product}`}>{item.name}</Link>

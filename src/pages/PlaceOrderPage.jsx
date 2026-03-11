@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import API_URL from '../constants/api';
+import { getImageUrl } from '../constants/api';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
@@ -217,7 +217,7 @@ const PlaceOrderPage = () => {
                                         <Row>
                                             <Col md={1}>
                                                 <Image
-                                                    src={`${API_URL}${item.image}`}
+                                                    src={getImageUrl(item.image)}
                                                     alt={item.name}
                                                     fluid
                                                     rounded
