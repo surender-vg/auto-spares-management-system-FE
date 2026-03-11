@@ -15,6 +15,22 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
     }, []);
 
+    // Auto-logout on 401 responses (expired/invalid token)
+    useEffect(() => {
+        const interceptor = axios.interceptors.response.use(
+            (response) => response,
+            (error) => {
+                if (error.response?.status === 401) {
+                    localStorage.removeItem('userInfo');
+                    setUser(null);
+                    window.location.href = '/login';
+                }
+                return Promise.reject(error);
+            }
+        );
+        return () => axios.interceptors.response.eject(interceptor);
+    }, []);
+
     const login = async (email, password) => {
         try {
             const { data } = await axios.post('/api/users/login', { email, password });

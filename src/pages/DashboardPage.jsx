@@ -33,7 +33,7 @@ const DashboardPage = () => {
     const [sidebarOpen, setSidebarOpen] = useState(true);
 
     useEffect(() => {
-        if (!user) { navigate('/login'); return; }
+        if (!user || !user.token) { navigate('/login'); return; }
         if (user.role !== 'admin') { navigate('/'); return; }
 
         const fetchData = async () => {
