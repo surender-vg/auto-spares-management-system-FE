@@ -20,7 +20,8 @@ export const AuthProvider = ({ children }) => {
         const interceptor = axios.interceptors.response.use(
             (response) => response,
             (error) => {
-                if (error.response?.status === 401) {
+                const isLoginRequest = error.config?.url === '/api/users/login';
+                if (error.response?.status === 401 && !isLoginRequest) {
                     localStorage.removeItem('userInfo');
                     setUser(null);
                     window.location.href = '/login';
@@ -38,9 +39,19 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem('userInfo', JSON.stringify(data));
             return data;
         } catch (error) {
-            throw error.response && error.response.data.message
-                ? error.response.data.message
-                : error.message;
+            // Try to extract error message from various possible fields
+            let msg = '';
+            if (error.response && error.response.data) {
+                if (error.response.data.error) {
+                    msg = error.response.data.error;
+                } else if (error.response.data.message) {
+                    msg = error.response.data.message;
+                } else if (typeof error.response.data === 'string') {
+                    msg = error.response.data;
+                }
+            }
+            if (!msg) msg = error.message;
+            throw msg;
         }
     };
 

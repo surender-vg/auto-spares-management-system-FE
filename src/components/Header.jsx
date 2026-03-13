@@ -9,6 +9,8 @@ const Header = () => {
     const { user, logout } = useAuth();
     const { cartItems } = useCart();
 
+    if (user?.role === 'admin') return null;
+
     return (
         <header>
             <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>

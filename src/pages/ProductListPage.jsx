@@ -74,6 +74,7 @@ const ProductListPage = () => {
                                         <th>Price</th>
                                         <th>Category</th>
                                         <th>Brand</th>
+                                        <th>Stock</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -94,6 +95,11 @@ const ProductListPage = () => {
                                             <td className="adm-text-bold">₹{product.price}</td>
                                             <td><span className="adm-badge adm-badge-default">{product.category}</span></td>
                                             <td className="adm-text-muted">{product.brand}</td>
+                                            <td>
+                                                <span className={`adm-badge ${product.countInStock === 0 ? 'adm-badge-danger' : product.countInStock <= 5 ? 'adm-badge-warning' : 'adm-badge-success'}`}>
+                                                    {product.countInStock === 0 ? 'Out of Stock' : `${product.countInStock} in stock`}
+                                                </span>
+                                            </td>
                                             <td>
                                                 <div className="adm-actions-cell">
                                                     <Link to={`/admin/product/${product._id}/edit`} className="adm-icon-btn adm-icon-btn-edit" title="Edit">

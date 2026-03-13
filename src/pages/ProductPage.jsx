@@ -4,12 +4,15 @@ import { Row, Col, Image, ListGroup, Card, Button, Form } from 'react-bootstrap'
 import axios from 'axios';
 import { getImageUrl } from '../constants/api';
 import { useNavigate } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
+import { toast } from 'react-toastify';
 
 const ProductPage = () => {
     const [product, setProduct] = useState({});
     const [qty, setQty] = useState(1);
     const { id } = useParams();
     const navigate = useNavigate();
+    const { addToCart } = useCart();
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -20,10 +23,13 @@ const ProductPage = () => {
         fetchProduct();
     }, [id]);
 
-    const addToCartHandler = () => {
-        // We will implement Cart Context or use LocalStorage later
-        // For now, redirect to cart page with query params
-        navigate(`/cart/${id}?qty=${qty}`);
+    const addToCartHandler = async () => {
+        try {
+            await addToCart(product._id, Number(qty));
+            navigate('/checkout');
+        } catch (error) {
+            toast.error(error.message || 'Failed to add to cart');
+        }
     };
 
     return (

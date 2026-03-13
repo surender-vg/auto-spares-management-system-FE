@@ -1,10 +1,11 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Container } from 'react-bootstrap';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useAuth, AuthProvider } from './context/AuthContext';
+import { CartProvider } from './context/CartContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ChatBot from './components/ChatBotNew';
-import { AuthProvider } from './context/AuthContext';
+import { Container } from 'react-bootstrap';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
@@ -32,7 +33,19 @@ import PaymentPage from './pages/PaymentPage';
 import PlaceOrderPage from './pages/PlaceOrderPage';
 import CheckoutPage from './pages/CheckoutPage';
 import PaymentSuccessPage from './pages/PaymentSuccessPage';
-import { CartProvider } from './context/CartContext';
+import InvoicePage from './pages/InvoicePage';
+
+const HomeRoute = () => {
+  const { user } = useAuth();
+  if (user?.role === 'admin') return <Navigate to="/admin/dashboard" replace />;
+  return <HomePage />;
+};
+
+const ConditionalChatBot = () => {
+  const { user } = useAuth();
+  if (user?.role === 'admin') return null;
+  return <ChatBot />;
+};
 
 const App = () => {
   return (
@@ -44,7 +57,7 @@ const App = () => {
             <Container>
               <Routes>
                 {/* Main Pages */}
-                <Route path="/" element={<HomePage />} />
+                <Route path="/" element={<HomeRoute />} />
                 <Route path="/products" element={<ProductsPage />} />
                 <Route path="/product/:id" element={<ProductPage />} />
                 <Route path="/about" element={<AboutUsPage />} />
@@ -60,6 +73,7 @@ const App = () => {
                 <Route path="/payment" element={<PaymentPage />} />
                 <Route path="/placeorder" element={<PlaceOrderPage />} />
                 <Route path="/order/:id" element={<OrderPage />} />
+                <Route path="/order/:id/invoice" element={<InvoicePage />} />
                 
                 {/* Auth Pages */}
                 <Route path="/login" element={<LoginPage />} />
@@ -81,7 +95,7 @@ const App = () => {
           </main>
           <Footer />
           <ToastContainer />
-          <ChatBot />
+          <ConditionalChatBot />
         </CartProvider>
       </AuthProvider>
     </Router>

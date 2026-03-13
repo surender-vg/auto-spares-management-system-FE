@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
     FaChartLine, FaBox, FaClipboardList, FaUsers, FaEnvelopeOpenText,
-    FaCog, FaTimes, FaBars, FaSignOutAlt, FaHome
+    FaCog, FaTimes, FaBars, FaSignOutAlt
 } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
 
@@ -34,8 +34,8 @@ const DashboardSidebar = ({ sidebarOpen, setSidebarOpen, user }) => {
                 {/* Brand */}
                 <div className="adm-sidebar-brand">
                     <div className="adm-brand-logo" onClick={() => navigate('/admin/dashboard')}>
-                        <span className="adm-brand-icon">S</span>
-                        <span className="adm-brand-text">SpareAdmin</span>
+                        <img src="/logo.png" alt="Logo" style={{ height: '40px', width: '40px', objectFit: 'contain', borderRadius: '8px' }} />
+                        <span className="adm-brand-text" style={{ fontSize: '13.5px', lineHeight: '1.3', maxWidth: '120px' }}>Shree Selvanayagi<br />Auto Spares</span>
                     </div>
                     <button className="adm-sidebar-toggle" onClick={() => setSidebarOpen(!sidebarOpen)}>
                         {sidebarOpen ? <FaTimes /> : <FaBars />}
@@ -62,17 +62,7 @@ const DashboardSidebar = ({ sidebarOpen, setSidebarOpen, user }) => {
                         })}
                     </div>
 
-                    <div className="adm-nav-group">
-                        <span className="adm-nav-group-title">OTHER</span>
-                        <button className="adm-nav-item" onClick={() => navigate('/')}>
-                            <span className="adm-nav-icon"><FaHome /></span>
-                            <span className="adm-nav-label">Storefront</span>
-                        </button>
-                        <button className={`adm-nav-item ${location.pathname === '/profile' ? 'active' : ''}`} onClick={() => navigate('/profile')}>
-                            <span className="adm-nav-icon"><FaCog /></span>
-                            <span className="adm-nav-label">Settings</span>
-                        </button>
-                    </div>
+
                 </nav>
 
                 {/* Footer */}
@@ -83,6 +73,9 @@ const DashboardSidebar = ({ sidebarOpen, setSidebarOpen, user }) => {
                             <span className="adm-user-name">{user?.name}</span>
                             <span className="adm-user-role">{user?.role}</span>
                         </div>
+                        <button className="adm-logout-btn" onClick={() => navigate('/profile')} title="Settings" style={{ marginRight: '4px' }}>
+                            <FaCog />
+                        </button>
                         <button className="adm-logout-btn" onClick={handleLogout} title="Logout">
                             <FaSignOutAlt />
                         </button>

@@ -34,7 +34,7 @@ const CheckoutPage = () => {
         }
         if (cartItems.length === 0) {
             toast.info('Your cart is empty');
-            navigate('/cart');
+            navigate('/products');
             return;
         }
 
@@ -72,6 +72,11 @@ const CheckoutPage = () => {
         // Validate shipping
         if (!address || !city || !postalCode || !country || !phone) {
             toast.error('Please fill in all shipping address fields');
+            return;
+        }
+
+        if (!/^\d{10}$/.test(phone)) {
+            toast.error('Phone number must be exactly 10 digits');
             return;
         }
 
@@ -283,8 +288,17 @@ const CheckoutPage = () => {
                                                 required
                                                 placeholder="Enter phone number"
                                                 value={phone}
-                                                onChange={(e) => setPhone(e.target.value)}
+                                                onChange={(e) => {
+                                                    const val = e.target.value.replace(/\D/g, '');
+                                                    if (val.length <= 10) setPhone(val);
+                                                }}
+                                                maxLength={10}
+                                                pattern="\d{10}"
+                                                isInvalid={phone.length > 0 && !/^\d{10}$/.test(phone)}
                                             />
+                                            <Form.Control.Feedback type="invalid">
+                                                Phone number must be exactly 10 digits.
+                                            </Form.Control.Feedback>
                                         </Form.Group>
                                     </Col>
                                 </Row>
@@ -417,8 +431,8 @@ const CheckoutPage = () => {
                         </Card>
 
                         <div className="text-center mt-3">
-                            <Button variant="link" className="text-muted" onClick={() => navigate('/cart')}>
-                                <FaArrowLeft className="me-1" /> Back to Cart
+                            <Button variant="link" className="text-muted" onClick={() => navigate('/products')}>
+                                <FaArrowLeft className="me-1" /> Back to Products
                             </Button>
                         </div>
                     </Col>

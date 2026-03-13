@@ -25,14 +25,42 @@ const RegisterPage = () => {
 
     const submitHandler = async (e) => {
         e.preventDefault();
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            toast.error('Please enter a valid email address');
+            return;
+        }
+
+        if (password.length < 6) {
+            toast.error('Password must be at least 6 characters');
+            return;
+        }
+
+        if (!/[A-Z]/.test(password)) {
+            toast.error('Password must contain at least one uppercase letter');
+            return;
+        }
+
+        if (!/[0-9]/.test(password)) {
+            toast.error('Password must contain at least one number');
+            return;
+        }
+
+        if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+            toast.error('Password must contain at least one special character');
+            return;
+        }
+
         if (password !== confirmPassword) {
             toast.error('Passwords do not match');
-        } else {
-            try {
-                await register(name, email, password);
-            } catch (err) {
-                toast.error(err);
-            }
+            return;
+        }
+
+        try {
+            await register(name, email, password);
+        } catch (err) {
+            toast.error(err);
         }
     };
 

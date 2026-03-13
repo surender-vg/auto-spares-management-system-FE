@@ -303,7 +303,7 @@ const DashboardPage = () => {
                                             </span>
                                         </td>
                                         <td>
-                                            <Link to={`/order/${order._id}`} className="adm-icon-btn" title="View">
+                                            <Link to={`/order/${order._id}/invoice`} className="adm-icon-btn" title="View Invoice">
                                                 <FaEye />
                                             </Link>
                                         </td>

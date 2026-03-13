@@ -138,7 +138,7 @@ const OrderListPage = () => {
                                             <td><span className={`adm-badge ${statusBadge(order.status)}`}>{order.status}</span></td>
                                             <td>
                                                 <div className="adm-actions-cell">
-                                                    <Link to={`/order/${order._id}`} className="adm-icon-btn" title="View">
+                                                    <Link to={`/order/${order._id}/invoice`} className="adm-icon-btn" title="View Invoice">
                                                         <FaEye />
                                                     </Link>
                                                     {order.status !== 'Delivered' && order.status !== 'Cancelled' ? (

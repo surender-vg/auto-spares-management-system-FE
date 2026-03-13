@@ -1,29 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Row, Col, Card } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
 const ProfilePage = () => {
     const { user } = useAuth();
+    const navigate = useNavigate();
     const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (user) {
             setName(user.name || '');
-            setEmail(user.email || '');
         }
     }, [user]);
 
     const submitHandler = async (e) => {
         e.preventDefault();
 
-        if (password !== confirmPassword) {
-            toast.error('Passwords do not match');
+        if (!name.trim()) {
+            toast.error('Name cannot be empty');
             return;
         }
 
@@ -36,15 +34,13 @@ const ProfilePage = () => {
                 },
             };
 
-            const { data } = await axios.put(
+            await axios.put(
                 '/api/users/profile',
-                { name, email, password },
+                { name },
                 config
             );
 
-            toast.success('Profile updated successfully');
-            setPassword('');
-            setConfirmPassword('');
+            toast.success('Name updated successfully');
         } catch (error) {
             toast.error(error.response?.data?.message || 'Error updating profile');
         } finally {
@@ -56,6 +52,16 @@ const ProfilePage = () => {
         <Row className="justify-content-md-center">
             <Col xs={12} md={8}>
                 <Card className="auth-form-container">
+                    {user?.role === 'admin' && (
+                        <Button
+                            variant="outline-secondary"
+                            className="mb-3"
+                            style={{ width: 'fit-content' }}
+                            onClick={() => navigate('/admin/dashboard')}
+                        >
+                            ← Back to Dashboard
+                        </Button>
+                    )}
                     <h1>User Profile</h1>
                     <Form onSubmit={submitHandler}>
                         <Form.Group controlId="name">
@@ -68,38 +74,18 @@ const ProfilePage = () => {
                             />
                         </Form.Group>
 
-                        <Form.Group controlId="email">
+                        <Form.Group className="mt-3">
                             <Form.Label>Email Address</Form.Label>
                             <Form.Control
                                 type="email"
-                                placeholder="Enter email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                        </Form.Group>
-
-                        <Form.Group controlId="password">
-                            <Form.Label>Password</Form.Label>
-                            <Form.Control
-                                type="password"
-                                placeholder="Enter new password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-                        </Form.Group>
-
-                        <Form.Group controlId="confirmPassword">
-                            <Form.Label>Confirm Password</Form.Label>
-                            <Form.Control
-                                type="password"
-                                placeholder="Confirm new password"
-                                value={confirmPassword}
-                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                value={user?.email || ''}
+                                disabled
+                                style={{ background: '#f3f4f6', color: '#6b7280' }}
                             />
                         </Form.Group>
 
                         <Button type="submit" variant="primary" className="mt-3" disabled={loading}>
-                            {loading ? 'Updating...' : 'Update Profile'}
+                            {loading ? 'Updating...' : 'Update Name'}
                         </Button>
                     </Form>
 

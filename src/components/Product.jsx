@@ -1,23 +1,28 @@
 
 import React, { useState } from 'react';
 import { Card, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { getImageUrl } from '../constants/api';
 import { toast } from 'react-toastify';
 
 const Product = ({ product }) => {
     const { addToCart } = useCart();
+    const navigate = useNavigate();
     const [adding, setAdding] = useState(false);
 
     const handleAddToCart = async () => {
+        if (product.countInStock === 0) {
+            toast.error('This product is out of stock');
+            return;
+        }
         try {
             setAdding(true);
             await addToCart(product._id, 1);
-            toast.success(`${product.name} added to cart!`);
+            navigate('/checkout');
         } catch (error) {
             console.error('Add to cart error:', error);
-            toast.error('Failed to add item to cart');
+            toast.error(error.message || 'Failed to add item to cart');
         } finally {
             setAdding(false);
         }
@@ -45,6 +50,16 @@ const Product = ({ product }) => {
                     <Card.Text as="h3">₹{product.price}</Card.Text>
                 </div>
                 {/* Add to Cart Button */}
+                {product.countInStock === 0 ? (
+                    <Button
+                        variant="secondary"
+                        className="mt-3 add-to-cart-btn"
+                        style={{ background: '#9ca3af', border: 'none', fontWeight: 600, cursor: 'not-allowed' }}
+                        disabled
+                    >
+                        Out of Stock
+                    </Button>
+                ) : (
                 <Button
                     variant="primary"
                     className="mt-3 add-to-cart-btn"
@@ -54,6 +69,7 @@ const Product = ({ product }) => {
                 >
                     {adding ? 'Adding...' : 'Add to Cart'}
                 </Button>
+                )}
             </Card.Body>
         </Card>
     );

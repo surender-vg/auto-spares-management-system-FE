@@ -5,13 +5,14 @@ import { useAuth } from '../context/AuthContext';
 import { getImageUrl } from '../constants/api';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import { FaCheck, FaTimes, FaEye, FaBoxOpen, FaShoppingBag, FaClock, FaTruck, FaCreditCard } from 'react-icons/fa';
+import { FaCheck, FaTimes, FaEye, FaBoxOpen, FaShoppingBag, FaClock, FaTruck, FaCreditCard, FaBan } from 'react-icons/fa';
 
 const MyOrdersPage = () => {
     const { user } = useAuth();
     const navigate = useNavigate();
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [cancellingId, setCancellingId] = useState(null);
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -28,6 +29,26 @@ const MyOrdersPage = () => {
         if (user) fetchOrders();
     }, [user]);
 
+    const cancelHandler = async (orderId) => {
+        if (!window.confirm('Are you sure you want to cancel this order?')) return;
+        try {
+            setCancellingId(orderId);
+            const config = { headers: { Authorization: `Bearer ${user.token}` } };
+            const { data } = await axios.put(`/api/orders/${orderId}/cancel`, {}, config);
+            setOrders((prev) => prev.map((o) => o._id === orderId ? data.order : o));
+            toast.success('Order cancelled successfully');
+        } catch (error) {
+            const msg =
+                error.response?.data?.message ||
+                error.response?.data?.error ||
+                error.message ||
+                'Error cancelling order';
+            toast.error(msg);
+        } finally {
+            setCancellingId(null);
+        }
+    };
+
     if (loading) {
         return (
             <div className="text-center py-5">
@@ -41,12 +62,12 @@ const MyOrdersPage = () => {
 
     const getStatusConfig = (status) => {
         switch (status) {
-            case 'Delivered': return { color: '#10b981', bg: '#ecfdf5', icon: <FaCheck /> };
-            case 'Out for Delivery': return { color: '#f59e0b', bg: '#fffbeb', icon: <FaTruck /> };
-            case 'Shipped': return { color: '#3b82f6', bg: '#eff6ff', icon: <FaTruck /> };
-            case 'Cancelled': return { color: '#ef4444', bg: '#fef2f2', icon: <FaTimes /> };
-            case 'Processing': return { color: '#6b7280', bg: '#f3f4f6', icon: <FaClock /> };
-            default: return { color: '#6b7280', bg: '#f3f4f6', icon: <FaClock /> };
+            case 'Delivered': return { color: '#fff', bg: '#10b981', icon: <FaCheck /> };
+            case 'Out for Delivery': return { color: '#fff', bg: '#f59e0b', icon: <FaTruck /> };
+            case 'Shipped': return { color: '#fff', bg: '#3b82f6', icon: <FaTruck /> };
+            case 'Cancelled': return { color: '#fff', bg: '#ef4444', icon: <FaTimes /> };
+            case 'Processing': return { color: '#fff', bg: '#6366f1', icon: <FaClock /> };
+            default: return { color: '#fff', bg: '#6366f1', icon: <FaClock /> };
         }
     };
 
@@ -162,14 +183,27 @@ const MyOrdersPage = () => {
                                     {/* Order Card Footer */}
                                     <div className="order-card-footer">
                                         <small className="text-muted">{itemCount} item(s)</small>
-                                        <Button
-                                            variant="outline-primary"
-                                            size="sm"
-                                            className="order-view-btn"
-                                            onClick={() => navigate(`/order/${order._id}`)}
-                                        >
-                                            <FaEye className="me-1" /> View Details
-                                        </Button>
+                                        <div className="d-flex gap-2">
+                                            {order.status !== 'Delivered' && order.status !== 'Cancelled' && (
+                                                <Button
+                                                    variant="outline-danger"
+                                                    size="sm"
+                                                    onClick={() => cancelHandler(order._id)}
+                                                    disabled={cancellingId === order._id}
+                                                >
+                                                    <FaBan className="me-1" />
+                                                    {cancellingId === order._id ? 'Cancelling...' : 'Cancel'}
+                                                </Button>
+                                            )}
+                                            <Button
+                                                variant="outline-primary"
+                                                size="sm"
+                                                className="order-view-btn"
+                                                onClick={() => navigate(`/order/${order._id}`)}
+                                            >
+                                                <FaEye className="me-1" /> View Details
+                                            </Button>
+                                        </div>
                                     </div>
                                 </Card.Body>
                             </Card>

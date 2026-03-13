@@ -30,6 +30,11 @@ const ContactUsPage = () => {
             return;
         }
 
+        if (formData.phone && !/^\d{10}$/.test(formData.phone)) {
+            toast.error('Phone number must be exactly 10 digits');
+            return;
+        }
+
         setLoading(true);
         try {
             // You can replace this with your actual API endpoint
@@ -198,9 +203,20 @@ const ContactUsPage = () => {
                                         type="tel"
                                         name="phone"
                                         value={formData.phone}
-                                        onChange={handleChange}
-                                        placeholder="+91 9876543210"
+                                        onChange={(e) => {
+                                            const val = e.target.value.replace(/\D/g, '');
+                                            if (val.length <= 10) {
+                                                setFormData(prev => ({ ...prev, phone: val }));
+                                            }
+                                        }}
+                                        placeholder="9876543210"
+                                        maxLength={10}
+                                        pattern="\d{10}"
+                                        isInvalid={formData.phone.length > 0 && !/^\d{10}$/.test(formData.phone)}
                                     />
+                                    <Form.Control.Feedback type="invalid">
+                                        Phone number must be exactly 10 digits.
+                                    </Form.Control.Feedback>
                                 </Form.Group>
 
                                 <Form.Group className="mb-3">

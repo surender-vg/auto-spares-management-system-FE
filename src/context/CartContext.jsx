@@ -31,6 +31,10 @@ export const CartProvider = ({ children }) => {
     const addToCart = async (id, qty) => {
         const { data } = await axios.get(`/api/products/${id}`);
 
+        if (data.countInStock === 0) {
+            throw new Error('This product is out of stock');
+        }
+
         const item = {
             product: data._id,
             name: data.name,

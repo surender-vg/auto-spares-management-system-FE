@@ -8,7 +8,7 @@ import axios from 'axios';
 import {
     FaArrowLeft, FaTruck, FaCreditCard, FaBoxOpen, FaCheckCircle,
     FaTimesCircle, FaClock, FaMapMarkerAlt, FaPhone, FaUser, FaEnvelope,
-    FaShippingFast
+    FaShippingFast, FaBan, FaFileInvoice
 } from 'react-icons/fa';
 
 const ORDER_STAGES = ['Processing', 'Shipped', 'Out for Delivery', 'Delivered'];
@@ -19,6 +19,7 @@ const OrderPage = () => {
     const navigate = useNavigate();
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [cancelling, setCancelling] = useState(false);
 
     useEffect(() => {
         const fetchOrder = async () => {
@@ -54,6 +55,23 @@ const OrderPage = () => {
             toast.success(`Order status updated to ${newStatus}`);
         } catch (error) {
             toast.error(error.response?.data?.message || 'Error updating order status');
+        }
+    };
+
+    const cancelHandler = async () => {
+        if (!window.confirm('Are you sure you want to cancel this order?')) return;
+        try {
+            setCancelling(true);
+            const config = { headers: { Authorization: `Bearer ${user.token}` } };
+            await axios.put(`/api/orders/${id}/cancel`, {}, config);
+            // Re-fetch the full populated order to keep UI consistent
+            const { data } = await axios.get(`/api/orders/${id}`, config);
+            setOrder(data);
+            toast.success('Order cancelled successfully');
+        } catch (error) {
+            toast.error(error.response?.data?.message || error.response?.data?.error || 'Error cancelling order');
+        } finally {
+            setCancelling(false);
         }
     };
 
@@ -316,7 +334,42 @@ const OrderPage = () => {
                         </Card.Body>
                     </Card>
 
+                    {/* Cancel Order Button for the order owner */}
+                    {user && order.user && (user._id === order.user._id || user._id === order.user) &&
+                        order.status !== 'Delivered' && order.status !== 'Cancelled' && (
+                        <Card className="mt-3 border-danger">
+                            <Card.Body className="text-center">
+                                <p className="text-muted mb-2" style={{ fontSize: '0.85rem' }}>Changed your mind?</p>
+                                <Button
+                                    variant="outline-danger"
+                                    className="w-100"
+                                    onClick={cancelHandler}
+                                    disabled={cancelling}
+                                >
+                                    <FaBan className="me-2" />
+                                    {cancelling ? 'Cancelling...' : 'Cancel Order'}
+                                </Button>
+                            </Card.Body>
+                        </Card>
+                    )}
+
+                    {order.status === 'Cancelled' && (
+                        <Card className="mt-3 border-danger">
+                            <Card.Body className="text-center">
+                                <FaTimesCircle size={24} className="text-danger mb-1" />
+                                <p className="mb-0 text-danger fw-bold">Order Cancelled</p>
+                            </Card.Body>
+                        </Card>
+                    )}
+
                     <div className="text-center mt-3">
+                        <Button
+                            className="w-100 mb-2"
+                            style={{ background: '#1a1a2e', border: 'none', fontWeight: 600 }}
+                            onClick={() => navigate(`/order/${order._id}/invoice`)}
+                        >
+                            <FaFileInvoice className="me-2" /> View / Print Invoice
+                        </Button>
                         <Button variant="link" className="text-muted" onClick={() => navigate('/myorders')}>
                             <FaArrowLeft className="me-1" /> Back to Order History
                         </Button>

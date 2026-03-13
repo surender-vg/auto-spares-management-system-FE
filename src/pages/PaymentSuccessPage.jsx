@@ -91,20 +91,20 @@ const PaymentSuccessPage = () => {
                     variant="primary"
                     size="lg"
                     className="success-btn"
-                    onClick={() => navigate(`/order/${id}`)}
+                    onClick={() => navigate('/myorders')}
                     style={{ background: '#ff6b35', border: 'none', fontWeight: 700, padding: '0.75rem 2rem' }}
                 >
-                    <FaBoxOpen className="me-2" />
-                    View Order Details
+                    <FaListAlt className="me-2" />
+                    View Order History
                 </Button>
                 <Button
                     variant="outline-secondary"
                     size="lg"
-                    onClick={() => navigate('/myorders')}
+                    onClick={() => navigate(`/order/${id}`)}
                     style={{ fontWeight: 700, padding: '0.75rem 2rem' }}
                 >
-                    <FaListAlt className="me-2" />
-                    Order History
+                    <FaBoxOpen className="me-2" />
+                    View Order Details
                 </Button>
             </div>
 
